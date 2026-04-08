@@ -1,0 +1,45 @@
+# Architecture
+
+High-level system design for the Skin Lesion Identification App.
+
+## Components
+
+```
+┌─────────────┐      HTTPS       ┌─────────────┐      import      ┌─────────────┐
+│   Mobile    │ ───────────────► │   Backend   │ ───────────────► │     ML      │
+│ (Expo/RN)   │ ◄─────────────── │  (FastAPI)  │ ◄─────────────── │  (PyTorch)  │
+└─────────────┘                  └──────┬──────┘                  └─────────────┘
+                                        │
+                                        │ auth / db / storage
+                                        ▼
+                                 ┌─────────────┐
+                                 │  Supabase   │
+                                 └─────────────┘
+```
+
+## Request flow: a single scan
+
+1. User signs in on the mobile app (Supabase Auth).
+2. User captures or picks a lesion photo.
+3. Mobile uploads the image to the backend with the user's auth token.
+4. Backend validates the token, stores the image in Supabase Storage.
+5. Backend preprocesses the image and calls `ml/inference/predict.py`.
+6. ML returns `{prediction, confidence}`.
+7. Backend writes a row to the `scans` table.
+8. Backend returns the result to the mobile app.
+9. Mobile displays the prediction, confidence, and a non-medical disclaimer.
+
+## Boundaries
+- **Mobile never imports ML code.** It only talks to the backend over HTTP.
+- **Backend never trains.** Training happens offline in `ml/training/`; the backend only loads saved weights via `ml/inference/`.
+- **ML never touches Supabase.** Persistence is the backend's job.
+
+## Data
+- `profiles` — one per user (mirrors `auth.users`)
+- `scans` — one per prediction, owned by a user
+- See [db-schema.md](db-schema.md) for column details.
+
+## Security notes
+- Row-Level Security (RLS) on `scans` so users can only read their own rows.
+- Backend uses Supabase service role only for trusted server-side operations.
+- Images stored in a private Supabase Storage bucket; signed URLs issued on demand.

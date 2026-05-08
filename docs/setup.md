@@ -3,12 +3,63 @@
 Local development setup for each component.
 
 ## Prerequisites
-- Node.js 20+ and npm
-- Python 3.13.3 (see `.python-version` at the project root)
-- Expo CLI (`npm install -g expo-cli`) — optional, `npx expo` also works
-- Supabase CLI:
-  - macOS: `brew install supabase/tap/supabase`
-  - Windows: `scoop install supabase` or download from [supabase.com/docs/guides/cli](https://supabase.com/docs/guides/cli)
+
+### All platforms
+- **Python 3.13.3** (see `.python-version` at the project root)
+- **Node.js 20+** and npm
+- **Supabase CLI** (cloud project access)
+- **Expo Go app** on your phone — install from the iOS App Store or Google Play. Required to run the mobile app on a real device.
+
+### Windows install (via Scoop — recommended)
+```powershell
+scoop install python
+scoop install nodejs-lts
+scoop bucket add supabase https://github.com/supabase/scoop-bucket.git
+scoop install supabase
+```
+
+### macOS install (via Homebrew)
+```bash
+brew install python@3.13 node
+brew install supabase/tap/supabase
+```
+
+After `brew install python@3.13`, use `python3` rather than `python` in commands — Homebrew does not create a bare `python` symlink by default.
+
+### Optional — emulators / simulators
+Skip if testing on a physical phone with Expo Go.
+- **iOS Simulator (macOS only)**: install Xcode from the App Store; the simulator is bundled.
+- **Android Emulator (any OS)**: install Android Studio and create a virtual device.
+
+## Switching between environments
+
+The repo has two Python venvs (`backend/.venv` for FastAPI, `ml/.venv` for PyTorch) plus the mobile Node project. Only one Python venv can be active per terminal.
+
+### Verify which environment is active
+When a Python venv is active, your prompt is prefixed with `(.venv)`. To check *which* one:
+
+**Windows (PowerShell):**
+```powershell
+(Get-Command python).Source
+```
+
+**macOS / Linux:**
+```bash
+which python
+```
+
+The path tells you which venv (e.g. `...\backend\.venv\...` vs `...\ml\.venv\...`).
+
+### Deactivate
+```
+deactivate
+```
+
+### Common pitfalls
+1. **`cd backend` does not activate the venv.** Always run the activation command after `cd`.
+2. **Run ML scripts from the project root**, not from inside `ml/`. Use `python -m ml.training.train` so package imports resolve.
+3. **One venv per terminal.** Open separate terminal tabs for parallel backend / ML work.
+4. **VS Code interpreter.** The bottom-bar Python selector picks one interpreter for the workspace. Switch it to match the file you're editing.
 
 ## Backend
 **macOS / Linux:**
@@ -101,13 +152,24 @@ ham10000/
 The other CSV files in the download (`hmnist_*.csv`) are not used and can be ignored.
 
 ## Mobile
+
+**macOS / Linux:**
 ```bash
 cd mobile
 npm install
 cp .env.example .env   # then fill in real values
 npx expo start
 ```
-Scan the QR code with the Expo Go app on your phone.
+
+**Windows (PowerShell):**
+```powershell
+cd mobile
+npm install
+copy .env.example .env   # then fill in real values
+npx expo start
+```
+
+Scan the QR code with the Expo Go app on your phone. Both your phone and your computer must be on the same Wi-Fi network.
 
 ## Supabase (local)
 ```bash

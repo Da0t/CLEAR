@@ -57,6 +57,49 @@ Always run them from the **project root** (not from inside `ml/`) so Python can 
 python -m ml.training.train
 ```
 
+## HAM10000 Dataset
+
+The image data is gitignored and must be downloaded locally by each developer.
+
+### 1. Create a Kaggle account
+Sign up at [kaggle.com](https://www.kaggle.com) — a school email gives you free GPU access.
+
+### 2. Get a Kaggle API token
+- Go to kaggle.com → avatar (top right) → Settings → **API Tokens** tab
+- Click **"Generate New Token"** and copy the token string it shows you
+
+### 3. Save the token (Git Bash)
+```bash
+mkdir -p ~/.kaggle && echo YOUR_TOKEN > ~/.kaggle/access_token
+```
+Replace `YOUR_TOKEN` with the actual token. Do not share this token — it gives access to your Kaggle account.
+
+### 4. Install the Kaggle CLI and download
+Run from the **project root** with the ML venv active:
+
+**Windows (PowerShell):**
+```powershell
+ml\.venv\Scripts\Activate
+ml\.venv\Scripts\pip install kaggle
+ml\.venv\Scripts\kaggle datasets download -d kmader/skin-cancer-mnist-ham10000 -p ml\data\raw\ham10000 --unzip
+```
+
+**macOS / Linux:**
+```bash
+source ml/.venv/bin/activate
+pip install kaggle
+kaggle datasets download -d kmader/skin-cancer-mnist-ham10000 -p ml/data/raw/ham10000 --unzip
+```
+
+This downloads ~6 GB and takes around 10 minutes. When complete, `ml/data/raw/ham10000/` should contain:
+```
+ham10000/
+├── HAM10000_images_part_1/   — 5,000 images
+├── HAM10000_images_part_2/   — 5,015 images
+└── HAM10000_metadata.csv     — labels for all 10,015 images
+```
+The other CSV files in the download (`hmnist_*.csv`) are not used and can be ignored.
+
 ## Mobile
 ```bash
 cd mobile

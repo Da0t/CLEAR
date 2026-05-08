@@ -32,18 +32,20 @@ Build a mobile app that:
 ## Clinical Scope
 This project focuses on identifying a broad range of skin lesion categories from images.
 
-Possible lesion categories may include:
+Active categories (HAM10000, Phases 1–2):
 - melanoma
 - nevus
 - basal cell carcinoma
-- squamous cell carcinoma
 - actinic keratosis
 - benign keratosis
 - dermatofibroma
 - vascular lesion
+
+Deferred to Phase 3 (require additional datasets beyond HAM10000):
+- squamous cell carcinoma
 - seborrheic keratosis
 
-The exact set of categories will depend on the dataset selected and the quality of available labels.
+See `ml/data/README.md` for the canonical label set and dataset translation tables.
 
 ## Product Vision
 The app should feel like a real mobile tool for lesion screening and organization. A user should be able to:

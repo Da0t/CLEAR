@@ -25,7 +25,7 @@ root/
 5. **No medical claims** — UI copy and API responses must avoid implying diagnosis. Always frame as "experimental classification".
 
 ## Current phase
-Phase 1 → Phase 2 transition: structure exists, backend foundation is starting.
+Phase 0 (foundation): skeleton only — no component is wired end-to-end yet. See [docs/phases.md](docs/phases.md) for the full build plan.
 
 ## Conventions
 

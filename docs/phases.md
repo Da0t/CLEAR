@@ -77,7 +77,7 @@ This document is the master build plan for CLEAR. Each phase has a clear goal, a
 - [ ] No other backend changes needed — inference interface is the same
 
 ### Database
-- [ ] Write `supabase/migrations/0003_expand_prediction_labels.sql` to expand the `prediction` CHECK constraint to include all 7 HAM10000 canonical labels (replacing binary labels)
+- No migration needed. `0002_profile_trigger_and_constraints.sql` already includes all Phase 1 binary labels (`suspicious`, `non_suspicious`) and all 7 HAM10000 canonical labels in the `prediction` CHECK constraint. The next migration (`0003`) belongs to Phase 3.
 
 ### Mobile
 - [ ] Update label → display string mapping for all 7 classes (e.g. `melanoma` → "Melanoma", `nevus` → "Common Mole")

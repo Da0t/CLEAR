@@ -29,6 +29,18 @@ One row per lesion prediction.
 - `notes` — user-supplied free text
 - `follow_up_required` — bool for triage
 
+## Constraints & Triggers (added in `0002`)
+
+**`scans_confidence_range`** — `confidence IS NULL OR (confidence >= 0 AND confidence <= 1)`
+
+**`scans_prediction_valid`** — `prediction` must be `NULL` or one of:
+- Phase 1 binary: `suspicious`, `non_suspicious`
+- Phase 2 HAM10000: `melanoma`, `nevus`, `basal_cell_carcinoma`, `actinic_keratosis`, `benign_keratosis`, `dermatofibroma`, `vascular_lesion`
+
+**`handle_new_user` trigger** — fires `AFTER INSERT ON auth.users`; inserts a matching row into `public.profiles` automatically on sign-up.
+
 ## Row-Level Security
 - `scans`: users can `select`/`insert` only rows where `user_id = auth.uid()`.
 - `profiles`: users can `select`/`update` only their own row.
+
+> **RLS vs service-role:** RLS policies protect direct client access only. The backend uses the Supabase service-role key, which bypasses RLS. The backend enforces user ownership in application code by filtering on the user ID extracted from the JWT.

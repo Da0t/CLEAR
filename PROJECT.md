@@ -1,6 +1,6 @@
 # PROJECT.md
 
-# Skin Lesion Identification App
+# CLEAR — Skin Lesion Identification App
 
 ## Overview
 This project is a mobile application for identifying and classifying skin lesions from user-submitted images. Users will be able to create an account, capture or upload a photo of a skin lesion, receive a machine learning prediction, and store their scan history.

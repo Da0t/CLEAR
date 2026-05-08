@@ -3,7 +3,7 @@
 Guidance for AI coding agents working in this repository.
 
 ## Project context
-Skin Lesion Identification App — see [PROJECT.md](PROJECT.md) for full vision, scope, and phased plan. This is an **educational + technical project**, not a medical device. Predictions are experimental and must never be framed as medical certainty.
+CLEAR — see [PROJECT.md](PROJECT.md) for full vision, scope, and phased plan. This is an **educational + technical project**, not a medical device. Predictions are experimental and must never be framed as medical certainty.
 
 ## Repository layout
 ```

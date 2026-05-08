@@ -4,7 +4,7 @@ Local development setup for each component.
 
 ## Prerequisites
 - Node.js 20+ and npm
-- Python 3.11+
+- Python 3.13.3 (see `.python-version` at the project root)
 - Expo CLI (`npm install -g expo-cli`) — optional, `npx expo` also works
 - Supabase CLI:
   - macOS: `brew install supabase/tap/supabase`

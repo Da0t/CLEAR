@@ -37,20 +37,31 @@ Skip if testing on a physical phone with Expo Go.
 
 The repo has two Python venvs (`backend/.venv` for FastAPI, `ml/.venv` for PyTorch) plus the mobile Node project. Only one Python venv can be active per terminal.
 
+Both venv directories are named `.venv` (this is the convention most tooling auto-detects), but each is created with `--prompt`, so the shell prompt distinguishes them: `(backend)` vs `(ml)`.
+
 ### Verify which environment is active
-When a Python venv is active, your prompt is prefixed with `(.venv)`. To check *which* one:
+When a venv is active, your prompt is prefixed with `(backend)` or `(ml)`. If you ever want to confirm via the actual Python path:
 
 **Windows (PowerShell):**
 ```powershell
 (Get-Command python).Source
+$env:VIRTUAL_ENV         # empty if no venv active
 ```
 
 **macOS / Linux:**
 ```bash
 which python
+echo $VIRTUAL_ENV
 ```
 
 The path tells you which venv (e.g. `...\backend\.venv\...` vs `...\ml\.venv\...`).
+
+### Why a venv may auto-activate when you open a terminal
+If a venv activates by itself when you open a terminal in this folder, it's almost certainly **VS Code's Python extension** running the activation script for the workspace's selected interpreter (the one shown in the bottom-bar Python selector). VS Code stores this selection in user-level state, not in the repo, so it follows you across terminals inside that workspace.
+
+To confirm it's VS Code (and not a PowerShell profile or shell hook): open a regular PowerShell window **outside VS Code**, `cd` into the project, and run `$env:VIRTUAL_ENV`. If it's empty there but populated inside VS Code's terminal, the activation is coming from VS Code.
+
+To change which venv VS Code auto-activates: click the Python version in the bottom-right status bar → "Select Interpreter" → pick `backend\.venv\Scripts\python.exe` or `ml\.venv\Scripts\python.exe`.
 
 ### Deactivate
 ```
@@ -67,7 +78,7 @@ deactivate
 **macOS / Linux:**
 ```bash
 cd backend
-python -m venv .venv
+python -m venv .venv --prompt backend
 source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env   # then fill in real values
@@ -77,7 +88,7 @@ uvicorn app.main:app --reload
 **Windows (PowerShell):**
 ```powershell
 cd backend
-python -m venv .venv
+python -m venv .venv --prompt backend
 .\.venv\Scripts\Activate
 pip install -r requirements.txt
 copy .env.example .env   # then fill in real values
@@ -89,7 +100,7 @@ uvicorn app.main:app --reload
 **macOS / Linux:**
 ```bash
 cd ml
-python -m venv .venv
+python -m venv .venv --prompt ml
 source .venv/bin/activate
 pip install -r requirements.txt
 ```
@@ -97,10 +108,18 @@ pip install -r requirements.txt
 **Windows (PowerShell):**
 ```powershell
 cd ml
-python -m venv .venv
+python -m venv .venv --prompt ml
 .\.venv\Scripts\Activate
 pip install -r requirements.txt
 ```
+
+### Already have a venv? Retrofit it without recreating
+The `--prompt` flag on `python -m venv` only takes effect at venv creation. If you created your venvs before this convention existed (so your prompt shows `(.venv)` instead of `(backend)` / `(ml)`), don't recreate — just add a single line to `pyvenv.cfg`:
+
+- `backend/.venv/pyvenv.cfg` → add `prompt = backend`
+- `ml/.venv/pyvenv.cfg` → add `prompt = ml`
+
+The next time you activate the venv, the new prompt prefix takes effect. No reinstall needed.
 
 Training and inference scripts live under `ml/training/` and `ml/inference/`.
 Always run them from the **project root** (not from inside `ml/`) so Python can find the package:

@@ -1,6 +1,6 @@
 # Architecture
 
-High-level system design for the Skin Lesion Identification App.
+High-level system design for CLEAR — the Skin Lesion Identification App.
 
 ## Components
 
@@ -24,8 +24,8 @@ High-level system design for the Skin Lesion Identification App.
 3. Mobile uploads the image to the backend with the user's auth token.
 4. Backend validates the token, stores the image in Supabase Storage.
 5. Backend preprocesses the image and calls `ml/inference/predict.py`.
-6. ML returns `{prediction, confidence}`.
-7. Backend writes a row to the `scans` table.
+6. ML returns `{label, confidence}`.
+7. Backend writes a row to the `scans` table (the `label` value goes into the `prediction` column).
 8. Backend returns the result to the mobile app.
 9. Mobile displays the prediction, confidence, and a non-medical disclaimer.
 

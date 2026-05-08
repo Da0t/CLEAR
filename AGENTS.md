@@ -43,6 +43,7 @@ Phase 0 (foundation): skeleton only — no component is wired end-to-end yet. Se
 ### Mobile (`mobile/`)
 - Expo + TypeScript
 - Screens in `src/screens/`, reusable UI in `src/components/`, API/Supabase clients in `src/lib/`
+- **Design system: read [mobile/DESIGN.md](mobile/DESIGN.md) before touching any UI.** Visual reference at `mobile/design-preview.html` (open in browser).
 
 ### Supabase (`supabase/`)
 - SQL migrations in `supabase/migrations/`

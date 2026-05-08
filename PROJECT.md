@@ -103,25 +103,9 @@ Version 1 will focus on the core pipeline:
 6. user can review previous scans
 
 ## Modeling Direction
+Supervised learning is the baseline: start with a simple classifier, prove the end-to-end pipeline, then expand. Confidence thresholding, uncertainty surfacing, and image-quality checks come after the classifier is solid.
 
-### Phase 1: Supervised Learning Baseline
-The first model will use supervised learning for image classification.
-
-Possible starting tasks:
-- binary classification: suspicious vs non-suspicious lesion
-- multiclass classification: lesion category prediction
-
-The likely best path is to begin with a simpler baseline and then expand to broader multiclass classification once the training and inference pipeline is stable.
-
-### Phase 2: Broader Lesion Classification
-After the baseline works, the model can expand to classify a broader range of lesion types supported by the dataset.
-
-### Phase 3: Confidence and Decision Support
-Later versions may include:
-- confidence thresholds
-- uncertainty warnings
-- better result interpretation
-- image quality checks
+The phase-by-phase breakdown — what model, on what dataset, with what number of classes — lives in [docs/phases.md](docs/phases.md), which is the authoritative roadmap.
 
 ## Reinforcement Learning Plan
 Reinforcement learning will not be used for the initial image classifier itself.
@@ -188,42 +172,7 @@ Optional future fields:
 - follow_up_required
 
 ## Development Order
-
-### Phase 1: Planning and Structure
-- define project scope
-- finalize tech stack
-- create repo structure
-- document system architecture
-
-### Phase 2: Backend Foundation
-- create FastAPI app
-- connect Supabase
-- set up authentication support
-- create image upload pipeline
-- build placeholder prediction endpoint
-
-### Phase 3: Machine Learning
-- choose dataset
-- clean and inspect labels
-- build PyTorch training pipeline
-- train baseline model
-- save and load model weights
-- connect inference to backend
-
-### Phase 4: Mobile App
-- create Expo app
-- add authentication screens
-- add camera / upload flow
-- connect to backend
-- build result screen
-- build history screen
-
-### Phase 5: Improvement
-- improve UI and user flow
-- add better prediction handling
-- add confidence warnings
-- add broader lesion support
-- add RL-based decision support
+The full phased build plan — Phase 0 (foundation) through Phase 5 (deferred RL) — lives in [docs/phases.md](docs/phases.md). That document is the authoritative source for execution order, per-phase goals, and definitions of done.
 
 ## MVP Definition
 A successful MVP is:

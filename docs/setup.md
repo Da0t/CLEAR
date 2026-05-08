@@ -26,6 +26,8 @@ brew install supabase/tap/supabase
 
 After `brew install python@3.13`, use `python3` rather than `python` in commands — Homebrew does not create a bare `python` symlink by default.
 
+> Note: `.python-version` pins exactly `3.13.3` for `pyenv`-style tools. Brew installs the latest 3.13.x, which is fine — any 3.13.x works.
+
 ### Optional — emulators / simulators
 Skip if testing on a physical phone with Expo Go.
 - **iOS Simulator (macOS only)**: install Xcode from the App Store; the simulator is bundled.
@@ -113,7 +115,7 @@ python -m ml.training.train
 The image data is gitignored and must be downloaded locally by each developer.
 
 ### 1. Create a Kaggle account
-Sign up at [kaggle.com](https://www.kaggle.com) — a school email gives you free GPU access.
+Sign up at [kaggle.com](https://www.kaggle.com).
 
 ### 2. Get a Kaggle API token
 - Go to kaggle.com → avatar (top right) → Settings → **API Tokens** tab
@@ -178,3 +180,22 @@ supabase db reset      # applies all migrations + seed
 ```
 
 Run these from the project root (not inside `supabase/`).
+
+## Cross-role setup
+
+The repo expects two developers, each focused on one side. If you usually work on one side and want to step into the other, here's the *additional* setup you'd need.
+
+### Backend / ML dev → also wants to run mobile
+You already have Python 3.13 + venvs. To add mobile:
+1. Install Node 20+ (Windows: `scoop install nodejs-lts`; macOS: `brew install node`).
+2. Install the Expo Go app on your phone.
+3. Follow the [Mobile](#mobile) section above (`cd mobile && npm install && ...`).
+
+You don't need a global TypeScript install — `mobile/package.json` brings its own. VS Code's TypeScript support picks it up from the workspace.
+
+### Mobile dev → also wants to run backend or ML
+You already have Node + the mobile app running. To add backend / ML:
+1. Install Python 3.13 (Windows: `scoop install python`; macOS: `brew install python@3.13`).
+2. Follow the [Backend](#backend) and/or [ML](#ml) sections above.
+
+Each side has its own venv and its own `.env`. Activating one venv does not affect the other.

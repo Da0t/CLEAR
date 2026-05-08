@@ -13,7 +13,7 @@ root/
 ├── mobile/        # React Native + Expo + TypeScript app
 ├── backend/       # Python FastAPI server
 ├── ml/            # PyTorch training & inference
-├── docs/          # architecture notes, setup guides, design decisions
+├── docs/          # architecture, setup, build phases, design decisions
 └── supabase/      # Supabase config, SQL migrations, seed data
 ```
 

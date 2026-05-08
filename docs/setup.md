@@ -39,6 +39,23 @@ The repo has two Python venvs (`backend/.venv` for FastAPI, `ml/.venv` for PyTor
 
 Both venv directories are named `.venv` (this is the convention most tooling auto-detects), but each is created with `--prompt`, so the shell prompt distinguishes them: `(backend)` vs `(ml)`.
 
+### How to switch venvs
+From any directory in the repo:
+
+**Windows (PowerShell):**
+```powershell
+deactivate; .\backend\.venv\Scripts\Activate   # → (backend)
+deactivate; .\ml\.venv\Scripts\Activate        # → (ml)
+```
+
+**macOS / Linux:**
+```bash
+deactivate; source backend/.venv/bin/activate   # → (backend)
+deactivate; source ml/.venv/bin/activate        # → (ml)
+```
+
+If no venv is currently active, drop the leading `deactivate;` — it's a function defined only when a venv is active, so it errors otherwise. The first activation in a fresh terminal is just the second half of the line.
+
 ### Verify which environment is active
 When a venv is active, your prompt is prefixed with `(backend)` or `(ml)`. If you ever want to confirm via the actual Python path:
 

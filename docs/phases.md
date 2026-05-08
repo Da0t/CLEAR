@@ -16,7 +16,7 @@ This document is the master build plan for CLEAR. Each phase has a clear goal, a
 - [ ] Verify: sign up a test user → profile row appears automatically in `public.profiles`
 
 ### Backend
-- [ ] Wire `config.py` — Supabase client initialised using `SUPABASE_URL` + `SUPABASE_KEY`
+- [ ] Wire `config.py` — Supabase client initialised using `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY`
 - [ ] Add image upload helper: receive bytes → upload to `scan-images` bucket → return URL
 - [ ] Add JWT validation middleware: extract user ID from the Supabase JWT on every request
 - [ ] Verify: `POST /health` returns `{"status": "ok"}`

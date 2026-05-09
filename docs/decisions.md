@@ -12,6 +12,11 @@ Lightweight log of meaningful technical decisions. Newest at the top.
 
 ---
 
+## 2026-05-09 — Lesion-grouped train/val/test splits for HAM10000
+**Context:** HAM10000 has 10,015 images of 7,470 unique lesions — about 18% of lesions have multiple images of the same physical spot (different angles or visits, sharing a `lesion_id`). A naive random image-level split would put the same lesion in both train and test.
+**Decision:** `ml/training/prepare_ham10000.py` splits at the lesion level: all images of one lesion go to one split. Splits are stratified by canonical label so rare classes (`df`, `vasc`) keep similar proportions across train/val/test. Ratios: 70/15/15 with seed 42.
+**Why:** Image-level splits would let the model memorize specific lesions instead of learning patterns, producing inflated test metrics that don't generalize. Lesion-grouped splits are the standard practice for HAM10000 and the only way to get a fair evaluation.
+
 ## 2026-05-07 — Auth handled directly by mobile, not proxied through backend
 **Context:** Backend had `/auth/register` and `/auth/login` stub endpoints intended to proxy calls to Supabase Auth. Meanwhile, the mobile app already initialised a Supabase JS client capable of auth directly.
 **Decision:** Mobile talks to Supabase Auth directly. The backend validates the user's JWT on each request but never proxies auth calls. The backend `/auth` router was deleted.

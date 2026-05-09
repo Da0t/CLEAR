@@ -28,7 +28,7 @@ This document is the master build plan for CLEAR. Each phase has a clear goal, a
 - [x] Verify: sign in on device → session persists across app restarts
 
 ### ML
-- [x] Confirm Python package imports work: `python -m ml.training.train` from project root
+- [x] Confirm Python package imports work: `python -c "from ml.preprocessing import get_transforms; print(get_transforms('val'))"` from project root
 - [x] Write `ml/preprocessing.py` — single `get_transforms(split)` function used by both training and inference (resize to 224×224, ImageNet normalize)
 - [x] Verify: `from ml.preprocessing import get_transforms` works without errors
 
@@ -77,7 +77,7 @@ This document is the master build plan for CLEAR. Each phase has a clear goal, a
 - [ ] No other backend changes needed — inference interface is the same
 
 ### Database
-- No migration needed. `0002_profile_trigger_and_constraints.sql` already includes all Phase 1 binary labels (`suspicious`, `non_suspicious`) and all 7 HAM10000 canonical labels in the `prediction` CHECK constraint. The next migration will be `0004` (`0003` was applied in Phase 0 to lock down the `handle_new_user` RPC).
+- No migration needed in Phase 2. `0002_profile_trigger_and_constraints.sql` already includes all Phase 1 binary labels (`suspicious`, `non_suspicious`) and all 7 HAM10000 canonical labels in the `prediction` CHECK constraint. Migration `0004` will be added in Phase 3 to introduce `squamous_cell_carcinoma` and `seborrheic_keratosis` once a dataset that supports them is added (`0003` was applied in Phase 0 to lock down the `handle_new_user` RPC).
 
 ### Mobile
 - [ ] Update label → display string mapping for all 7 classes (e.g. `melanoma` → "Melanoma", `nevus` → "Common Mole")

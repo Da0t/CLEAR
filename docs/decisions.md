@@ -29,7 +29,7 @@ Lightweight log of meaningful technical decisions. Newest at the top.
 
 ## 2026-05-07 — squamous_cell_carcinoma and seborrheic_keratosis deferred to Phase 3
 **Context:** These two labels are in the ISIC Archive but not in HAM10000 (SCC is folded into actinic_keratosis; seborrheic keratosis has no separate HAM10000 class).
-**Decision:** Both labels are excluded from the canonical set until Phase 3 when a dataset that supports them is added. The database constraint and label table will be updated in migration `0003`.
+**Decision:** Both labels are excluded from the canonical set until Phase 3 when a dataset that supports them is added. The database constraint and label table will be updated in migration `0004`.
 **Why:** Including them now would create canonical classes with zero training examples, which silently breaks training.
 
 ## 2026-04-08 — Supervised baseline before RL

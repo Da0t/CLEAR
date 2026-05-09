@@ -9,28 +9,28 @@ This document is the master build plan for CLEAR. Each phase has a clear goal, a
 **Goal:** Every component can talk to every other component. No features yet — just plumbing.
 
 ### Supabase
-- [ ] Create Supabase project (cloud) and link it locally with the CLI
-- [ ] Apply migration `0001_init.sql` (profiles + scans tables, RLS)
-- [ ] Apply migration `0002_...sql` (profile auto-creation trigger, schema constraints)
-- [ ] Create a private Supabase Storage bucket called `scan-images`
-- [ ] Verify: sign up a test user → profile row appears automatically in `public.profiles`
+- [x] Create Supabase project (cloud) and link it locally with the CLI
+- [x] Apply migration `0001_init.sql` (profiles + scans tables, RLS)
+- [x] Apply migration `0002_...sql` (profile auto-creation trigger, schema constraints)
+- [x] Create a private Supabase Storage bucket called `scan-images`
+- [x] Verify: sign up a test user → profile row appears automatically in `public.profiles`
 
 ### Backend
-- [ ] Wire `config.py` — Supabase client initialised using `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY`
-- [ ] Add image upload helper: receive bytes → upload to `scan-images` bucket → return storage path (signed URLs are issued on demand; `scans.image_url` stores the path)
-- [ ] Add JWT validation middleware: extract user ID from the Supabase JWT on every request
-- [ ] Verify: `GET /health` returns `{"status": "ok"}`
+- [x] Wire `config.py` — Supabase client initialised using `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY`
+- [x] Add image upload helper: receive bytes → upload to `scan-images` bucket → return storage path (signed URLs are issued on demand; `scans.image_url` stores the path)
+- [x] Add JWT validation middleware: extract user ID from the Supabase JWT on every request
+- [x] Verify: `GET /health` returns `{"status": "ok"}`
 
 ### Mobile
-- [ ] Implement login/sign-up screen using Supabase JS client directly
-- [ ] Store session JWT; attach it as `Authorization: Bearer <token>` on every backend API call
-- [ ] Create `mobile/.env` from `mobile/.env.example`; fill in real Supabase + API values
-- [ ] Verify: sign in on device → session persists across app restarts
+- [x] Implement login/sign-up screen using Supabase JS client directly
+- [x] Store session JWT; attach it as `Authorization: Bearer <token>` on every backend API call
+- [x] Create `mobile/.env` from `mobile/.env.example`; fill in real Supabase + API values
+- [x] Verify: sign in on device → session persists across app restarts
 
 ### ML
-- [ ] Confirm Python package imports work: `python -m ml.training.train` from project root
-- [ ] Write `ml/preprocessing.py` — single `get_transforms(split)` function used by both training and inference (resize to 224×224, ImageNet normalize)
-- [ ] Verify: `from ml.preprocessing import get_transforms` works without errors
+- [x] Confirm Python package imports work: `python -m ml.training.train` from project root
+- [x] Write `ml/preprocessing.py` — single `get_transforms(split)` function used by both training and inference (resize to 224×224, ImageNet normalize)
+- [x] Verify: `from ml.preprocessing import get_transforms` works without errors
 
 **Phase 0 done when:** a logged-in user can hit the backend from the phone and the backend can write a row to Supabase without errors.
 
@@ -77,7 +77,7 @@ This document is the master build plan for CLEAR. Each phase has a clear goal, a
 - [ ] No other backend changes needed — inference interface is the same
 
 ### Database
-- No migration needed. `0002_profile_trigger_and_constraints.sql` already includes all Phase 1 binary labels (`suspicious`, `non_suspicious`) and all 7 HAM10000 canonical labels in the `prediction` CHECK constraint. The next migration (`0003`) belongs to Phase 3.
+- No migration needed. `0002_profile_trigger_and_constraints.sql` already includes all Phase 1 binary labels (`suspicious`, `non_suspicious`) and all 7 HAM10000 canonical labels in the `prediction` CHECK constraint. The next migration will be `0004` (`0003` was applied in Phase 0 to lock down the `handle_new_user` RPC).
 
 ### Mobile
 - [ ] Update label → display string mapping for all 7 classes (e.g. `melanoma` → "Melanoma", `nevus` → "Common Mole")

@@ -99,7 +99,7 @@ python -m venv .venv --prompt backend
 source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env   # then fill in real values
-uvicorn app.main:app --reload
+uvicorn app.main:app --reload --host 0.0.0.0
 ```
 
 **Windows (PowerShell):**
@@ -109,8 +109,12 @@ python -m venv .venv --prompt backend
 .\.venv\Scripts\Activate
 pip install -r requirements.txt
 copy .env.example .env   # then fill in real values
-uvicorn app.main:app --reload
+uvicorn app.main:app --reload --host 0.0.0.0
 ```
+
+> `--host 0.0.0.0` binds uvicorn to all network interfaces so your phone (running Expo Go) can reach the backend over Wi-Fi. Without it, uvicorn only listens on `127.0.0.1` and the phone gets `Network request timed out`. Set `EXPO_PUBLIC_API_URL` in `mobile/.env` to `http://<your-laptop-ip>:8000` (find it with `ipconfig` on Windows or `ifconfig` on macOS).
+>
+> **Wi-Fi gotcha:** many networks (school, office, public hotspots) isolate clients from each other and block phone-to-laptop traffic, so even with `--host 0.0.0.0` the phone still times out. The simplest workaround is to tether your laptop to your phone's hotspot — both devices end up on the phone's private network and can talk to each other. Your laptop IP changes when you switch networks, so re-run `ipconfig`/`ifconfig` and update `EXPO_PUBLIC_API_URL` after switching.
 
 ## ML
 

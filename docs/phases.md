@@ -32,7 +32,7 @@ This document is the master build plan for CLEAR. Each phase has a clear goal, a
 - [x] Write `ml/preprocessing.py` — single `get_transforms(split)` function used by both training and inference (resize to 224×224, ImageNet normalize)
 - [x] Verify: `from ml.preprocessing import get_transforms` works without errors
 
-**Phase 0 done when:** a logged-in user can hit the backend from the phone and the backend can write a row to Supabase without errors.
+**Phase 0 done when:** a logged-in user can hit the backend from the phone and the backend can authenticate the request and return a stub response without errors.
 
 ---
 

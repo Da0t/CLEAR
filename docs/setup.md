@@ -40,7 +40,7 @@ The repo has two Python venvs (`backend/.venv` for FastAPI, `ml/.venv` for PyTor
 Both venv directories are named `.venv` (this is the convention most tooling auto-detects), but each is created with `--prompt`, so the shell prompt distinguishes them: `(backend)` vs `(ml)`.
 
 ### How to switch venvs
-From any directory in the repo:
+From the project root:
 
 **Windows (PowerShell):**
 ```powershell
@@ -86,30 +86,30 @@ deactivate
 ```
 
 ### Common pitfalls
-1. **`cd backend` does not activate the venv.** Always run the activation command after `cd`.
+1. **Run backend commands from the project root**, not from inside `backend/`. That lets FastAPI import the sibling `ml/` package.
 2. **Run ML scripts from the project root**, not from inside `ml/`. Use `python -m ml.training.train` so package imports resolve.
 3. **One venv per terminal.** Open separate terminal tabs for parallel backend / ML work.
 4. **VS Code interpreter.** The bottom-bar Python selector picks one interpreter for the workspace. Switch it to match the file you're editing.
 
 ## Backend
+Run these commands from the **project root** so the backend can import the sibling `ml/` package.
+
 **macOS / Linux:**
 ```bash
-cd backend
-python -m venv .venv --prompt backend
-source .venv/bin/activate
-pip install -r requirements.txt
-cp .env.example .env   # then fill in real values
-uvicorn app.main:app --reload --host 0.0.0.0
+python -m venv backend/.venv --prompt backend
+source backend/.venv/bin/activate
+pip install -r backend/requirements.txt
+cp backend/.env.example backend/.env   # then fill in real values
+python -m uvicorn backend.app.main:app --reload --host 0.0.0.0
 ```
 
 **Windows (PowerShell):**
 ```powershell
-cd backend
-python -m venv .venv --prompt backend
-.\.venv\Scripts\Activate
-pip install -r requirements.txt
-copy .env.example .env   # then fill in real values
-uvicorn app.main:app --reload --host 0.0.0.0
+python -m venv backend\.venv --prompt backend
+.\backend\.venv\Scripts\Activate
+pip install -r backend\requirements.txt
+copy backend\.env.example backend\.env   # then fill in real values
+python -m uvicorn backend.app.main:app --reload --host 0.0.0.0
 ```
 
 > `--host 0.0.0.0` binds uvicorn to all network interfaces so your phone (running Expo Go) can reach the backend over Wi-Fi. Without it, uvicorn only listens on `127.0.0.1` and the phone gets `Network request timed out`. Set `EXPO_PUBLIC_API_URL` in `mobile/.env` to `http://<your-laptop-ip>:8000` (find it with `ipconfig` on Windows or `ifconfig` on macOS).

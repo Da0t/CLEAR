@@ -41,8 +41,8 @@ This document is the master build plan for CLEAR. Each phase has a clear goal, a
 **Goal:** End-to-end working product with a simple "suspicious / not suspicious" answer.
 
 ### ML
-- [ ] Download HAM10000 dataset; place in `ml/data/raw/ham10000/`
-- [ ] Write `ml/training/prepare_ham10000.py` — reads HAM10000 CSVs, applies canonical label translation, writes `ml/data/splits/ham10000.csv` (`image_path,label` columns)
+- [x] Download HAM10000 dataset; place in `ml/data/raw/ham10000/`
+- [x] Write `ml/training/prepare_ham10000.py` — reads HAM10000 CSVs, applies canonical label translation, writes `ml/data/splits/ham10000.csv` (`split,image_path,label` columns)
 - [ ] For binary training, map labels using the binary grouping (see `ml/data/README.md` Rule 5)
 - [ ] Train ResNet18 with `num_classes=2`; save checkpoint to `ml/models/lesion_classifier_binary.pt`
 - [ ] Evaluate on the held-out test split; record accuracy and per-class metrics in `docs/decisions.md`

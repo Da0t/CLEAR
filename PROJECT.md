@@ -119,7 +119,7 @@ Instead, RL may later be used for decision-making tasks such as:
 The first version of the project will prioritize a strong supervised learning classifier before adding RL.
 
 ## Dataset Direction
-The project will likely rely on large public skin lesion datasets.
+The project starts with HAM10000 for Phases 1-2, then may incorporate larger public skin lesion datasets after the baseline pipeline performs well.
 
 Important dataset qualities:
 - large number of labeled images
@@ -128,7 +128,7 @@ Important dataset qualities:
 - metadata if available
 - image types that are relevant to mobile use cases
 
-The exact dataset will be chosen later, but the project aims to support a broad lesion classification task rather than only a narrow binary screen.
+HAM10000 is the current dataset focus. Later phases may add datasets such as ISIC Archive to broaden label coverage and improve generalization.
 
 ## Core Features
 - user authentication

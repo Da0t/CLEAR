@@ -2,6 +2,8 @@
 
 This document is the master build plan for CLEAR. Each phase has a clear goal, a definition of done, and a note on what the next phase unlocks. Start small, validate, then expand.
 
+**Current status:** Phase 1 has been verified on a real phone. CLEAR is now in Phase 2: replacing the binary classifier with a 7-class HAM10000 classifier while keeping the same backend/mobile pipeline.
+
 ---
 
 ## Phase 0 — Foundation (do this before writing any ML or product code)
@@ -43,20 +45,20 @@ This document is the master build plan for CLEAR. Each phase has a clear goal, a
 ### ML
 - [x] Download HAM10000 dataset; place in `ml/data/raw/ham10000/`
 - [x] Write `ml/training/prepare_ham10000.py` — reads HAM10000 CSVs, applies canonical label translation, writes `ml/data/splits/ham10000.csv` (`split,image_path,label` columns)
-- [ ] For binary training, map labels using the binary grouping (see `ml/data/README.md` Rule 5)
-- [ ] Train ResNet18 with `num_classes=2`; save checkpoint to `ml/models/lesion_classifier_binary.pt`
-- [ ] Evaluate on the held-out test split; record accuracy and per-class metrics in `docs/decisions.md`
-- [ ] Wire `ml/inference/predict.py` to load the checkpoint, apply `get_transforms("val")`, run forward pass, return `{label, confidence}`
+- [x] For binary training, map labels using the binary grouping (see `ml/data/README.md` Rule 5)
+- [x] Train ResNet18 with `num_classes=2`; save checkpoint to `ml/models/lesion_classifier_binary.pt`
+- [x] Evaluate on the held-out test split; record accuracy and per-class metrics in `docs/decisions.md`
+- [x] Wire `ml/inference/predict.py` to load the checkpoint, apply `get_transforms("val")`, run forward pass, return `{label, confidence}`
 
 ### Backend
-- [ ] Wire `backend/app/services/inference.py` to call `ml/inference/predict.py`
-- [ ] `POST /predictions`: receive image → upload to storage → run inference → insert scan row → return `{label, confidence, image_url, scan_id}`
-- [ ] `GET /scans`: fetch all scans for the authenticated user from Supabase, return list
+- [x] Wire `backend/app/services/inference.py` to call `ml/inference/predict.py`
+- [x] `POST /predictions`: receive image → run inference/validation → upload to storage → insert scan row → return `{label, confidence, image_url, signed_image_url, scan_id}`
+- [x] `GET /scans`: fetch all scans for the authenticated user from Supabase, return list
 
 ### Mobile
-- [ ] `ScanScreen`: open camera / image picker → send image to `POST /predictions` → display result
-- [ ] `HistoryScreen`: call `GET /scans` → show list of past scans with label and confidence
-- [ ] Display label as a human-readable string (e.g. `suspicious` → "Needs a closer look")
+- [x] `ScanScreen`: open camera / image picker → send image to `POST /predictions` → display result
+- [x] `HistoryScreen`: call `GET /scans` → show list of past scans with label and confidence
+- [x] Display label as a human-readable string (e.g. `suspicious` → "Needs a closer look")
 
 **Phase 1 done when:** a user can photograph a skin lesion on their phone, get a "suspicious" or "not suspicious" result, and see their scan history.
 
@@ -77,7 +79,7 @@ This document is the master build plan for CLEAR. Each phase has a clear goal, a
 - [ ] No other backend changes needed — inference interface is the same
 
 ### Database
-- No migration needed in Phase 2. `0002_profile_trigger_and_constraints.sql` already includes all Phase 1 binary labels (`suspicious`, `non_suspicious`) and all 7 HAM10000 canonical labels in the `prediction` CHECK constraint. Migration `0004` will be added in Phase 3 to introduce `squamous_cell_carcinoma` and `seborrheic_keratosis` once a dataset that supports them is added (`0003` was applied in Phase 0 to lock down the `handle_new_user` RPC).
+- No migration needed in Phase 2. `0002_profile_trigger_and_constraints.sql` already includes all Phase 1 binary labels (`suspicious`, `non_suspicious`) and all 7 HAM10000 canonical labels in the `prediction` CHECK constraint. A future Phase 3 migration will introduce `squamous_cell_carcinoma` and `seborrheic_keratosis` once a dataset that supports them is added.
 
 ### Mobile
 - [ ] Update label → display string mapping for all 7 classes (e.g. `melanoma` → "Melanoma", `nevus` → "Common Mole")
@@ -113,7 +115,7 @@ This document is the master build plan for CLEAR. Each phase has a clear goal, a
 - [ ] Add a confidence threshold (e.g. < 0.6) below which the app says "image unclear — try again"
 - [ ] Show confidence as a visual indicator (progress bar, color-coded)
 - [ ] Store `model_version` alongside each scan (add a migration) so history shows which model made the prediction
-- [ ] Consider adding a "not a medical device" disclaimer screen on first launch
+- [ ] Implement first-launch disclaimer/onboarding copy that clearly says CLEAR is not a medical device
 
 ---
 

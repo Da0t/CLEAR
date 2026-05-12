@@ -25,7 +25,7 @@ root/
 5. **No medical claims** — UI copy and API responses must avoid implying diagnosis. Always frame as "experimental classification".
 
 ## Current phase
-Phase 1 (binary classifier MVP): Phase 0 plumbing is complete. See [docs/phases.md](docs/phases.md) for the full build plan.
+Phase 2 (full HAM10000 classifier): Phase 1 binary MVP is verified end-to-end on a real phone. Current work should focus on the 7-class HAM10000 model, Phase 2 label display, and related evaluation notes. Do not add Phase 3 datasets or Phase 4 UX features until the supervised 7-class baseline is working.
 
 ## Conventions
 

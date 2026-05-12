@@ -22,12 +22,14 @@ High-level system design for CLEAR — the Skin Lesion Identification App.
 1. User signs in on the mobile app (Supabase Auth).
 2. User captures or picks a lesion photo.
 3. Mobile uploads the image to the backend with the user's auth token.
-4. Backend validates the token, stores the image in Supabase Storage.
-5. Backend preprocesses the image and calls `ml/inference/predict.py`.
-6. ML returns `{label, confidence}`.
+4. Backend validates the token, preprocesses the image, and calls `ml/inference/predict.py`.
+5. ML returns `{label, confidence}`.
+6. If inference succeeds, backend stores the image in Supabase Storage.
 7. Backend writes a row to the `scans` table (the `label` value goes into the `prediction` column).
-8. Backend returns the result to the mobile app.
-9. Mobile displays the prediction, confidence, and a non-medical disclaimer.
+8. Backend returns `{label, confidence, image_url, signed_image_url, scan_id}` to the mobile app.
+9. Mobile displays the prediction and confidence, then shows the saved result in history.
+
+> Disclaimer status: Phase 1 copy avoids medical certainty, but the full first-launch disclaimer/onboarding flow is deferred to Phase 4 UX polish.
 
 ## Boundaries
 - **Mobile never imports ML code.** It only talks to the backend over HTTP.

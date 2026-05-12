@@ -40,7 +40,7 @@ One row per lesion prediction.
 **`handle_new_user` trigger** — fires `AFTER INSERT ON auth.users`; inserts a matching row into `public.profiles` automatically on sign-up.
 
 ## Row-Level Security
-- `scans`: users can `select`/`insert` only rows where `user_id = auth.uid()`.
-- `profiles`: users can `select`/`update` only their own row.
+- `scans`: users can `select`/`insert` only rows where `user_id = (select auth.uid())`.
+- `profiles`: users can `select`/`update` only their own row via `(select auth.uid())`.
 
-> **RLS vs service-role:** RLS policies protect direct client access only. The backend uses the Supabase service-role key, which bypasses RLS. The backend enforces user ownership in application code by filtering on the user ID extracted from the JWT.
+> **RLS vs service-role:** RLS policies protect direct client access only. The backend uses the Supabase service-role key, which bypasses RLS. Migration `0004` grants that role `SELECT`/`INSERT` on `public.scans`; the backend still enforces user ownership in application code by filtering on the user ID extracted from the JWT.

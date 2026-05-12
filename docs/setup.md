@@ -94,6 +94,8 @@ deactivate
 ## Backend
 Run these commands from the **project root** so the backend can import the sibling `ml/` package.
 
+> The backend expects a local model checkpoint at `ml/models/lesion_classifier_binary.pt` by default (`MODEL_PATH` in `backend/.env`). Checkpoints are gitignored, so a fresh clone must either copy the checkpoint out-of-band or train one before real predictions work.
+
 **macOS / Linux:**
 ```bash
 python -m venv backend/.venv --prompt backend
@@ -220,6 +222,15 @@ supabase db reset      # applies all migrations + seed
 ```
 
 Run these from the project root (not inside `supabase/`).
+
+## Supabase (cloud migrations)
+When new migration files are added under `supabase/migrations/`, apply them to the linked cloud project with:
+
+```bash
+supabase db push --yes
+```
+
+Run this from the project root after `supabase login`.
 
 ## Cross-role setup
 

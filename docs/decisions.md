@@ -12,6 +12,36 @@ Lightweight log of meaningful technical decisions. Newest at the top.
 
 ---
 
+## 2026-05-11 — Keep model checkpoints out of the public repo
+**Context:** The Phase 1 binary checkpoint is useful locally, but the repository is public and should stay lightweight and reviewable.
+**Decision:** Keep `.pt` checkpoint files gitignored. Share model artifacts out-of-band or retrain from the committed training code when a new machine needs them.
+**Why:** Recruiters can evaluate the implementation, metrics, and app flow without downloading large binary weights, and we avoid accidentally treating an early experimental model as a polished distributable artifact.
+
+## 2026-05-11 — Clean up Supabase advisor warnings
+**Context:** After Phase 1 wiring, Supabase advisors flagged a live `public.rls_auto_enable()` SECURITY DEFINER function as externally executable and flagged direct `auth.uid()` calls in RLS policies as a performance issue.
+**Decision:** Add migrations to revoke client execute privileges from `rls_auto_enable()` when present and to rewrite RLS policies with `(select auth.uid())`.
+**Why:** These are small hardening/performance fixes that keep the public project cleaner before Phase 2 without changing app behavior.
+
+## 2026-05-11 — Phase 1 phone flow verified
+**Context:** The first real-device Phase 1 test covered backend inference, image upload, Supabase scan persistence, signed history thumbnails, and binary label display.
+**Decision:** Treat Phase 1 wiring as verified. Keep unsupported non-PNG/non-JPEG uploads rejected for now, with friendlier app copy. Validate/infer before storing so rejected images do not leave scan objects behind.
+**Why:** The MVP path is working end to end, and constraining uploads to PNG/JPEG keeps storage and image decoding simple until Phase 2/UX polish.
+
+## 2026-05-11 — Grant backend table privileges
+**Context:** Real-device Phase 1 testing reached `POST /predictions`, but the scan insert failed with Postgres error `42501` because `service_role` did not have table privileges on `public.scans`.
+**Decision:** Add migration `0004_grant_backend_table_privileges.sql`, granting `service_role` schema usage plus `SELECT` and `INSERT` on `public.scans`.
+**Why:** The backend still validates the user's JWT and filters by that user ID, while Supabase PostgREST needs explicit table privileges before the service-role key can save and read scan rows.
+
+## 2026-05-11 — Phase 1 binary baseline metrics
+**Context:** The first full Phase 1 binary ResNet18 was trained on HAM10000 using the lesion-grouped split and weighted cross-entropy.
+**Decision:** Use the epoch-5 checkpoint at `ml/models/lesion_classifier_binary.pt` as the initial Phase 1 local baseline. Held-out test metrics: accuracy `0.7505`; `non_suspicious` precision `0.9243`, recall `0.7494`, F1 `0.8277`, support `1189`; `suspicious` precision `0.4302`, recall `0.7550`, F1 `0.5481`, support `298`.
+**Why:** This is good enough to validate the end-to-end product pipeline. The `suspicious` recall is intentionally much stronger than precision because the weighted loss pushes the model to avoid missing suspicious examples, but the low precision means the output must remain framed as experimental classification, not diagnosis.
+
+## 2026-05-11 — Weighted loss for Phase 1 binary training
+**Context:** The Phase 1 binary HAM10000 grouping is still imbalanced: most rows map to `non_suspicious`, while `suspicious` is the minority class.
+**Decision:** `ml/training/train.py` uses class-weighted cross-entropy based on the training split counts.
+**Why:** A plain loss would let the model get deceptively high accuracy by leaning toward the majority class. Weighted loss is simpler than weighted sampling for the MVP and keeps the dataset split unchanged.
+
 ## 2026-05-09 — Lesion-grouped train/val/test splits for HAM10000
 **Context:** HAM10000 has 10,015 images of 7,470 unique lesions — about 18% of lesions have multiple images of the same physical spot (different angles or visits, sharing a `lesion_id`). A naive random image-level split would put the same lesion in both train and test.
 **Decision:** `ml/training/prepare_ham10000.py` splits at the lesion level: all images of one lesion go to one split. Splits are stratified by canonical label so rare classes (`df`, `vasc`) keep similar proportions across train/val/test. Ratios: 70/15/15 with seed 42.
@@ -34,7 +64,7 @@ Lightweight log of meaningful technical decisions. Newest at the top.
 
 ## 2026-05-07 — squamous_cell_carcinoma and seborrheic_keratosis deferred to Phase 3
 **Context:** These two labels are in the ISIC Archive but not in HAM10000 (SCC is folded into actinic_keratosis; seborrheic keratosis has no separate HAM10000 class).
-**Decision:** Both labels are excluded from the canonical set until Phase 3 when a dataset that supports them is added. The database constraint and label table will be updated in migration `0004`.
+**Decision:** Both labels are excluded from the canonical set until Phase 3 when a dataset that supports them is added. The database constraint and label table will be updated in a future Phase 3 migration.
 **Why:** Including them now would create canonical classes with zero training examples, which silently breaks training.
 
 ## 2026-04-08 — Supervised baseline before RL
